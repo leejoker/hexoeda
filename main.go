@@ -1,7 +1,7 @@
 package main
 
 import (
-	"HexoEditAndDeploy/service"
+	"hexoeda/service"
 )
 
 func main() {

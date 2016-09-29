@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/log"
 	"github.com/go-playground/log/handlers/console"
@@ -35,6 +36,7 @@ func NewApplication(configFile string) (*HexoEditAndDeploy, error) {
 	//gin settings
 	router := gin.New()
 	router.Use(gin.Recovery())
+	router.Use(static.Serve("/static/", static.LocalFile("./static", true)))
 
 	app := &HexoEditAndDeploy{Router: router, Conf: conf}
 	log.Info("create app over")
