@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="static/css/bootstrap-markdown.min.css"/>
+		<link rel="stylesheet" type="text/css" href="static/css/common.css"/>
+		<title>首页</title>
+	</head>
+	<body style="magin:0px;padding: 0px;" >
+	    <div class="container" id="mainwin" style="height: 100%;">
+	    	<nav class="nav" id="nav" style="height: 20%;">
+	    		<div class="nav navbar-default" style="background: #337AB7;">
+	    			<h1 style="text-align: center;height: 80px;" id="myTitle" >HexoEAD</h1>
+	    			<input type="text" name="" id="myTitle" value="" class="form-control" placeholder="Title"/>
+	    		</div>
+	    	</nav>
+	    	<div class="" id="sform" style="height: 80%;">
+	    		<form>
+	    			<div class="table-responsive" style="background: #337AB7;">
+	    				<table >
+	    					<tr >
+	    						<td ><button class="btn-md btn-default form-control" type="button">发布</button></td>
+	    						<td style="margin-left:20px ;padding-left: 20px;"><button class="btn-md btn-default form-control" type="button">取消</button></td>
+	    					</tr>
+	    				</table>
+					    <textarea name="content" id="myTextarea" data-provide="markdown-editable" rows="10" class="form-control">
+					    </textarea>
+	    			</div>
+				  </form> 
+	    	</div>
+	    </div>
+	</body>
+	<!--js-->
+	<script src="static/js/jquery-3.1.0.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="static/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="static/js/bootstrap-markdown.js" type="text/javascript" charset="utf-8"></script>
+	<script src="static/js/markdown.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="static/common/dateUtil.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+
+				$("#myTextarea").markdown({
+				autofocus:true,
+				savable:false,
+				height:700,
+				 onShow: function(e){
+				 	var date=formatDate(new Date(),"yyyy-MM-dd HH:mm:ss");
+					$("#myTextarea").text("---\ntitle: "+$("#myTitle").val()+
+					"  \ndate: "+date.toLocaleString()+"  \ntags:  \n---" );
+				 }
+				});
+				
+				$("#target-editor-with-custom-buttons").markdown({
+									  additionalButtons: [
+									    [{
+									          name: "groupCustom",
+									          data: [{
+									            name: "cmdBeer",
+									            toggle: true, // this param only take effect if you load bootstrap.js
+									            title: "Beer",
+									            icon: "glyphicon glyphicon-glass",
+									            callback: function(e){
+									              // Replace selection with some drinks
+									              var chunk, cursor,
+									                  selected = e.getSelection(), content = e.getContent(),
+									                  drinks = ["Heinekken", "Budweiser",
+									                            "Iron City", "Amstel Light",
+									                            "Red Stripe", "Smithwicks",
+									                            "Westvleteren", "Sierra Nevada",
+									                            "Guinness", "Corona", "Calsberg"],
+									                  index = Math.floor((Math.random()*10)+1)
+									
+									
+									              // Give random drink
+									              chunk = drinks[index]
+									
+									              // transform selection and set the cursor into chunked text
+									              e.replaceSelection(chunk)
+									              cursor = selected.start
+									
+									              // Set the cursor
+									              e.setSelection(cursor,cursor+chunk.length)
+									            }
+									          }]
+									    }]
+									  ]
+									});
+	</script>
+</html>
