@@ -24,7 +24,7 @@
 	    						<td style="margin-left:20px ;padding-left: 20px;"><button class="btn-md btn-default form-control" type="button">取消</button></td>
 	    					</tr>
 	    				</table>
-					    <textarea name="content" id="myTextarea" data-provide="markdown-editable" rows="10" class="form-control">
+					    <textarea name="content" id="myTextarea" data-provide="markdown-editable" rows="10" class="form-control ">
 					    </textarea>
 	    			</div>
 				  </form> 
@@ -37,53 +37,5 @@
 	<script src="static/js/bootstrap-markdown.js" type="text/javascript" charset="utf-8"></script>
 	<script src="static/js/markdown.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="static/common/dateUtil.js" type="text/javascript" charset="utf-8"></script>
-	<script type="text/javascript">
-
-				$("#myTextarea").markdown({
-				autofocus:true,
-				savable:false,
-				height:700,
-				 onShow: function(e){
-				 	var date=formatDate(new Date(),"yyyy-MM-dd HH:mm:ss");
-					$("#myTextarea").text("---\ntitle: "+$("#myTitle").val()+
-					"  \ndate: "+date.toLocaleString()+"  \ntags:  \n---" );
-				 }
-				});
-				
-				$("#target-editor-with-custom-buttons").markdown({
-									  additionalButtons: [
-									    [{
-									          name: "groupCustom",
-									          data: [{
-									            name: "cmdBeer",
-									            toggle: true, // this param only take effect if you load bootstrap.js
-									            title: "Beer",
-									            icon: "glyphicon glyphicon-glass",
-									            callback: function(e){
-									              // Replace selection with some drinks
-									              var chunk, cursor,
-									                  selected = e.getSelection(), content = e.getContent(),
-									                  drinks = ["Heinekken", "Budweiser",
-									                            "Iron City", "Amstel Light",
-									                            "Red Stripe", "Smithwicks",
-									                            "Westvleteren", "Sierra Nevada",
-									                            "Guinness", "Corona", "Calsberg"],
-									                  index = Math.floor((Math.random()*10)+1)
-									
-									
-									              // Give random drink
-									              chunk = drinks[index]
-									
-									              // transform selection and set the cursor into chunked text
-									              e.replaceSelection(chunk)
-									              cursor = selected.start
-									
-									              // Set the cursor
-									              e.setSelection(cursor,cursor+chunk.length)
-									            }
-									          }]
-									    }]
-									  ]
-									});
-	</script>
+	<script src="static/js/common.js" type="text/javascript" charset="utf-8"></script>
 </html>
