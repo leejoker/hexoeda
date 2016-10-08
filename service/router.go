@@ -16,4 +16,10 @@ func ConfigRouter(app *HexoEditAndDeploy) {
 	app.Router.GET("/createNew", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "newBlog.html", nil)
 	})
+
+	app.Router.POST("/push", func(c *gin.Context) {
+		//content := c.Param("content")
+
+		c.HTML(http.StatusOK, "newBlog.html", nil)
+	})
 }
