@@ -1,10 +1,6 @@
 	$("#myTextarea").markdown({
-		autofocus:true,
+		autofocus:false,
 		savable:false,
-		fullscreen:{
-			enable:false,
-			icons:{}
-		},
 		height:700,
 		onShow: function(e){
 		 	var date=formatDate(new Date(),"yyyy-MM-dd HH:mm:ss");
@@ -12,6 +8,9 @@
 			"  \ndate: "+date.toLocaleString()+"  \ntags:  \n---" );
 			$(".md-editor").addClass("md-fullscreen-mode");
 			$('body').addClass('md-nooverflow');
+		}
+		,onFocus: function(e){
+			return;
 		}
 		,additionalButtons: [
 		    [{
@@ -25,12 +24,9 @@
 		            callback: function(e){
 						// alert("点击发布");
 						$.ajax({
-							url:'push',
+							url:'/obtainContent',
 							type: 'POST',
-							data: {
-								content: $("#myTextarea").text(),
-								title: "title"
-							},
+							data: $("#contentForm").serialize(),
 							success: function(e){
 								alert("Success");
 							},
@@ -38,6 +34,11 @@
 								alert("Faild");
 							}
 						});
+
+						// var contentForm = document.getElementById("contentForm");
+						// contentForm.action = "/obtainContent";
+						// contentForm.method =  "post";
+						// contentForm.submit();
 		            }
 		          }]
 		    }

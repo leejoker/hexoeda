@@ -1,9 +1,9 @@
 package service
 
 import (
-	"net/http"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func ConfigRouter(app *HexoEditAndDeploy) {
@@ -17,9 +17,17 @@ func ConfigRouter(app *HexoEditAndDeploy) {
 		c.HTML(http.StatusOK, "newBlog.html", nil)
 	})
 
-	app.Router.POST("/push", func(c *gin.Context) {
-		//content := c.Param("content")
+	app.Router.POST("/obtainContent", func(c *gin.Context) {
+		content := c.PostForm("content")
+		fmt.Print("内容：\n" + content)
 
-		c.HTML(http.StatusOK, "newBlog.html", nil)
+		//此处进行文本处理，生成对应的md文件并执行hexo发布
+		path := app.Conf.HexoPath
+		hexo := NewHexo("test", content, path)
+		CreateNewBlog(hexo)
+		Clean(hexo)
+		Generate(hexo)
+		StartServer(hexo)
+		c.HTML(http.StatusOK, "", nil)
 	})
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"hexoeda/service"
+	"github.com/leejoker/hexoeda/service"
 )
 
 func main() {

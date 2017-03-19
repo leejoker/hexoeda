@@ -12,8 +12,8 @@ type Hexo struct {
 	Path    string `the path of hexo directory`
 }
 
-func NewHexo(content string, path string) *Hexo {
-	return &Hexo{Content: content, Path: path}
+func NewHexo(title string, content string, path string) *Hexo {
+	return &Hexo{Title: title, Content: content, Path: path}
 }
 
 func CreateNewBlog(hexo *Hexo) (result bool, err error) {
@@ -58,6 +58,14 @@ func Clean(hexo *Hexo) {
 
 func Generate(hexo *Hexo) {
 	cmd := exec.Command("hexo", "--cwd", hexo.Path, "generate")
+	err := cmd.Start()
+	if err != nil {
+		log.Info(err)
+	}
+}
+
+func StartServer(hexo *Hexo) {
+	cmd := exec.Command("hexo", "--cwd", hexo.Path, "s")
 	err := cmd.Start()
 	if err != nil {
 		log.Info(err)
