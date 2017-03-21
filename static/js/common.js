@@ -22,16 +22,16 @@
 		            btnText: '发布',
 					btnClass: 'btn btn-primary btn-sm',
 		            callback: function(e){
-						// alert("点击发布");
+						alert("Maybe you will wait a few minutes.....");
 						$.ajax({
 							url:'/obtainContent',
 							type: 'POST',
 							data: $("#contentForm").serialize(),
 							success: function(e){
-								alert("Success");
+								alert("Deploy Success");
 							},
 							error: function(e){
-								alert("Faild");
+								alert("Deploy Faild");
 							}
 						});
 

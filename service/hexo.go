@@ -1,9 +1,13 @@
 package service
 
 import (
+	"bufio"
+	"fmt"
 	"github.com/go-playground/log"
+	"io"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 type Hexo struct {
@@ -17,21 +21,25 @@ func NewHexo(title string, content string, path string) *Hexo {
 }
 
 func CreateNewBlog(hexo *Hexo) (result bool, err error) {
-	cmd := exec.Command("hexo", "--cwd", hexo.Path, "new", hexo.Title)
-	err = cmd.Start()
+	log.Info("hexo地址为：" + hexo.Path)
+	//log.Info("hexo内容为：" + hexo.Content)
+	//through the content to obtain the title
+	cotentArray := strings.Split(hexo.Content, "\n")
+	titleLine := cotentArray[1]
+	titleArray := strings.Split(titleLine, ":")
+	hexo.Title = strings.Replace(titleArray[1], " ", "", -1)
+	hexo.Title = strings.Replace(hexo.Title, "\n", "", -1)
+	hexo.Title = strings.Replace(hexo.Title, "\r", "", -1)
+	//create hexo blog file
+	filename := hexo.Path + "/source/_posts/" + hexo.Title + ".md"
+	log.Info("the filename is :" + filename)
+	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 	if err != nil {
-		log.Info("create new blog faild")
-		return false, err
-	}
-
-	//copy the content to md file
-	filename := hexo.Path + "/" + hexo.Title + ".md"
-	file, err := os.OpenFile(filename, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0666)
-	if err != nil {
-		log.Info("file not found")
+		log.Info("blog file create faild")
 		return false, err
 	}
 	defer file.Close()
+
 	_, err = file.WriteString(hexo.Content)
 	if err != nil {
 		log.Info("write file error")
@@ -41,11 +49,8 @@ func CreateNewBlog(hexo *Hexo) (result bool, err error) {
 }
 
 func Deploy(hexo *Hexo) {
-	cmd := exec.Command("hexo", "--cwd", hexo.Path, "deploy")
-	err := cmd.Start()
-	if err != nil {
-		log.Info(err)
-	}
+	params := []string{"--cwd", hexo.Path, "deploy"}
+	execCommand("hexo", params)
 }
 
 func Clean(hexo *Hexo) {
@@ -65,9 +70,35 @@ func Generate(hexo *Hexo) {
 }
 
 func StartServer(hexo *Hexo) {
-	cmd := exec.Command("hexo", "--cwd", hexo.Path, "s")
+	cmd := exec.Command("hexo", "--cwd", hexo.Path, "server")
 	err := cmd.Start()
 	if err != nil {
 		log.Info(err)
 	}
+}
+
+func execCommand(commandName string, params []string) bool {
+	cmd := exec.Command(commandName, params...)
+	//显示运行的命令
+	fmt.Printf("执行命令: %s\n", strings.Join(cmd.Args[1:], " "))
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "error=>", err.Error())
+		return false
+	}
+	cmd.Start() // Start开始执行c包含的命令，但并不会等待该命令完成即返回。Wait方法会返回命令的返回状态码并在命令返回后释放相关的资源。
+
+	reader := bufio.NewReader(stdout)
+
+	//实时循环读取输出流中的一行内容
+	for {
+		line, err2 := reader.ReadString('\n')
+		if err2 != nil || io.EOF == err2 {
+			break
+		}
+		fmt.Println(line)
+	}
+
+	cmd.Wait()
+	return true
 }
