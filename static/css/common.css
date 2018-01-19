@@ -2,3 +2,22 @@
 	margin-top: 30%;
 	margin-bottom: 50px;
 }
+
+.container{
+	display:table;
+	height:100%;
+}
+
+.row{
+	display: table-cell;
+	vertical-align: middle;
+}
+.row-centered {
+	text-align:center;
+}
+.col-centered {
+	display:inline-block;
+	float:none;
+	text-align:left;
+	margin-right:-4px;
+}

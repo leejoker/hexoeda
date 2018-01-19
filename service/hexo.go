@@ -62,11 +62,8 @@ func Clean(hexo *Hexo) {
 }
 
 func Generate(hexo *Hexo) {
-	cmd := exec.Command("hexo", "--cwd", hexo.Path, "generate")
-	err := cmd.Start()
-	if err != nil {
-		log.Info(err)
-	}
+	params := []string{"--cwd", hexo.Path, "generate"}
+	execCommand("hexo", params)
 }
 
 func StartServer(hexo *Hexo) {
