@@ -4,6 +4,16 @@
 	  if (r != null) return unescape(r[2]);
 	  return null;
 	}
+	
+	
+	function isEmpty(str){
+		if(!!str && str != "null"){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
 
 	$("#myTextarea").markdown({
 	  autofocus: false,
@@ -15,7 +25,7 @@
 	      "  \ndate: " + date.toLocaleString() + "  \ntags:  \n---";
 
 	    var fileName = decodeURI(decodeURI(GetQueryString("name")));
-	    if (fileName != "" && fileName != null) {
+	    if (!isEmpty(fileName)){
 	      //根据明文地址访问后台获取对应内容追加到编辑器中
 	      $.ajax({
 	        url: '/findContent',
