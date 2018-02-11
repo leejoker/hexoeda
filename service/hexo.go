@@ -2,9 +2,10 @@ package service
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
-	"github.com/go-playground/log"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -21,8 +22,8 @@ func NewHexo(title string, content string, path string) *Hexo {
 }
 
 func CreateNewBlog(hexo *Hexo) (result bool, err error) {
-	log.Info("hexo地址为：" + hexo.Path)
-	//log.Info("hexo内容为：" + hexo.Content)
+	log.Println("hexo地址为：" + hexo.Path)
+	//log.Println("hexo内容为：" + hexo.Content)
 	//through the content to obtain the title
 	cotentArray := strings.Split(hexo.Content, "\n")
 	titleLine := cotentArray[1]
@@ -32,17 +33,17 @@ func CreateNewBlog(hexo *Hexo) (result bool, err error) {
 	hexo.Title = strings.Replace(hexo.Title, "\r", "", -1)
 	//create hexo blog file
 	filename := hexo.Path + "/source/_posts/" + hexo.Title + ".md"
-	log.Info("the filename is :" + filename)
+	log.Println("the filename is :" + filename)
 	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 	if err != nil {
-		log.Info("blog file create faild")
+		log.Println("blog file create faild")
 		return false, err
 	}
 	defer file.Close()
 
 	_, err = file.WriteString(hexo.Content)
 	if err != nil {
-		log.Info("write file error")
+		log.Println("write file error")
 		return false, err
 	}
 	return true, err
@@ -57,7 +58,7 @@ func Clean(hexo *Hexo) {
 	cmd := exec.Command("hexo", "--cwd", hexo.Path, "clean")
 	err := cmd.Start()
 	if err != nil {
-		log.Info(err)
+		log.Println(err)
 	}
 }
 
@@ -70,14 +71,24 @@ func StartServer(hexo *Hexo) {
 	cmd := exec.Command("hexo", "--cwd", hexo.Path, "server")
 	err := cmd.Start()
 	if err != nil {
-		log.Info(err)
+		log.Println(err)
 	}
 }
 
 func execCommand(commandName string, params []string) bool {
 	cmd := exec.Command(commandName, params...)
+
+	logName := "deploy_log"
+	logFile, err := os.Create(logName)
+
+	defer logFile.Close()
+	if err != nil {
+		log.Fatalln("open file error")
+	}
+	infoLog := log.New(logFile, "[Info]", log.Llongfile)
+
 	//显示运行的命令
-	fmt.Printf("执行命令: %s\n", strings.Join(cmd.Args[1:], " "))
+	infoLog.Printf("执行命令: %s\n", strings.Join(cmd.Args[1:], " "))
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "error=>", err.Error())
@@ -93,7 +104,7 @@ func execCommand(commandName string, params []string) bool {
 		if err2 != nil || io.EOF == err2 {
 			break
 		}
-		fmt.Println(line)
+		infoLog.Println(line)
 	}
 
 	cmd.Wait()
